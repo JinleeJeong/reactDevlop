@@ -1,3 +1,4 @@
+import produce from 'immer' // Immutable Library!
 // 액션 타입 정의
 
 const CHANGE_INPUT = "waiting/CHANGE_INPUT";
@@ -36,29 +37,29 @@ const initialState = {
 export default function waiting(state = initialState, action) {
     switch (action.type){
         case CHANGE_INPUT:
-            return {
-                ...state,
-                input : action.payload
-            }
+            return produce(state, draft => {
+                draft.input = action.payload
+            })
         case CREATE:
-            return {
-                ...state,
-                list : state.list.concat({
+            return produce(state, draft => {
+                draft.list.push({
                     id : action.payload.id,
                     name : action.payload.text,
                     entered : false
                 })
-            }
+            })
         case ENTER: // 같은 id 값에 대한 entered 값을 전환
-            return {
-                ...state,
-                list : state.list.map(item => item.id === action.payload ? {...item, entered : !item.entered} : item)
-            }
+            return produce(state, draft => {
+                const item = draft.list.find(item => item.id === action.payload);
+                item.entered = !item.entered; 
+            });
+
         case LEAVE: // 다른 id 값에 대한 것을 filtering
-            return {
-                ...state,
-                list : state.list.filter(item => item.id !== action.payload)
-            }
+            return produce(state, draft => {
+                const list = draft.list.filter(item => item.id !== action.payload);
+                console.log(list);
+                draft.list = list;
+            });
         default:
             return {
                 ...state
