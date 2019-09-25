@@ -10,13 +10,15 @@ function App() {
     input.current.value = "";
   };
   /* 
+    useRef로 current가 키가 되고, 괄호의 값은 value가 되어, document.title은 React App이 되고, ()값은 자동으로 생성
     Obj={ current : "React App"} current는 고정 (parameter)
     input에 Ref 즉, 아래 input ref을 DOM으로 접근 Reset시 ""로 초기화
+    input.current.value가 current의 value값이 됀다.
   */
 
   React.useEffect(() => { // ComponentDidMount ==> render 실행하면 함께 실행
     console.log("Rendering")
-
+    console.log(prevDocumentTitle);
     startTimer();
     
     document.title = `Click count = ${count}`;
@@ -24,7 +26,7 @@ function App() {
       document.title = prevDocumentTitle;
       return stopTimer;
     };
-  }, [count]); // 해당 count 값이 변경될 때만 render!!
+  }, [count]); // 해당 count 값이 변경될 때만 render 되면서 상위 Click Count = x의 값도 바꿈
 
   const incrementCount = () => {
     setCount(prevCount => prevCount + 1);
@@ -34,6 +36,7 @@ function App() {
   }
 
   function startTimer() {
+    console.log(intervelRef);
     if (intervelRef.current) {
       return;
     }
